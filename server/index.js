@@ -1,7 +1,7 @@
 const express = require('express');
-const {google} = require('googleapis');
 const cors = require('cors');
 const dotenv = require('dotenv');
+
 dotenv.config();
 
 const app = express();
@@ -10,9 +10,13 @@ app.use(express.json());
 
 const PORT = process.env.PORT;
 
+require('./connection');
+
 app.get('/', (req, res)=>{
     res.send('Hello World');
 })
+
+app.use('/', require('./routes/auth'));
 
 
 app.listen(PORT, ()=>{

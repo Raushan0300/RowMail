@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = `${process.env.API_URL}`;
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 const getData = async(url: string, customHeader:any) => {
     try {
@@ -9,7 +9,7 @@ const getData = async(url: string, customHeader:any) => {
         });
         return response.data;
     } catch (error: any) {
-        return error.response.data;
+        return error.response?.data;
     }
 };
 
@@ -20,7 +20,7 @@ const postData = async(url: string, data: any, customHeader:any) => {
         });
         return response.data;
     } catch (error: any) {
-        return error.response.data;
+        return error.response?.data;
     }
 };
 
