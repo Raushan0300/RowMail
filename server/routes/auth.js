@@ -45,6 +45,7 @@ router.get('/auth/callback', async(req, res)=>{
             httpOnly: true,
             secure:process.env.NODE_ENV === 'production',
             sameSite: 'None',
+            path: '/',
         });
         res.redirect(`${process.env.CLIENT_URL}`);
     } catch (error) {
