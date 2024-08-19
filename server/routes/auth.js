@@ -41,14 +41,13 @@ router.get('/auth/callback', async(req, res)=>{
         );
 
         const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn: '7d'});
-        res.redirect(`${process.env.CLIENT_URL}`);
         res.cookie('token', token, {
             httpOnly: true,
             secure:process.env.NODE_ENV === 'production',
             sameSite: 'None',
             path: '/',
         });
-        // res.redirect(`${process.env.CLIENT_URL}`);
+        res.redirect(`${process.env.CLIENT_URL}`);
     } catch (error) {
         console.log(error);
         res.status(500).send('Something went wrong');
