@@ -44,7 +44,7 @@ router.get('/auth/callback', async(req, res)=>{
         res.cookie('token', token, {
             httpOnly: true,
             secure:process.env.NODE_ENV === 'production',
-            // sameSite: 'None',
+            sameSite: 'none',
             path: '/',
         });
         res.redirect(`${process.env.CLIENT_URL}`);
