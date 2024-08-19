@@ -1,6 +1,8 @@
+import { getTokenFromCookie } from "./lib/api";
 import PageClient from "./pageClient";
 
-export default function Home() {
+export default async function Home() {
+  getTokenFromCookie();
   return (
     <PageClient />
   );

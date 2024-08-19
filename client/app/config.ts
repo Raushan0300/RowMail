@@ -9,7 +9,7 @@ const getData = async(url: string, customHeader:any) => {
         });
         return response.data;
     } catch (error: any) {
-        return error.response?.data;
+        return error.response?.status;
     }
 };
 

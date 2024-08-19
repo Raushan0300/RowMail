@@ -3,7 +3,8 @@ const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
-const oAuth2Client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_REDIRECT_URIS);
+// const oAuth2Client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_REDIRECT_URIS);
+const {oAuth2Client} = require('../controllers/googleOAuth2Client');
 const User = require('../models/Users');
 
 router.get('/auth', (req, res)=>{
@@ -40,7 +41,11 @@ router.get('/auth/callback', async(req, res)=>{
         );
 
         const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn: '7d'});
-        res.redirect(`${process.env.CLIENT_URL}?token=${token}`);
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure:process.env.NODE_ENV !== 'development',
+        });
+        res.redirect(`${process.env.CLIENT_URL}`);
     } catch (error) {
         console.log(error);
         res.status(500).send('Something went wrong');

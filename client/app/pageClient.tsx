@@ -1,21 +1,6 @@
 'use client';
-import { useEffect } from 'react';
 
 export default function PageClient() {
-  useEffect(()=>{
-    console.log(process.env.NEXT_PUBLIC_API_URL);
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    if(token){
-      localStorage.setItem('token',token);
-      window.location.href = '/dashboard';
-    } else{
-      const token = localStorage.getItem('token');
-      if(token){
-        window.location.href = '/dashboard';
-      }
-    }
-  },[]);
   const handleLogin = async()=>{
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth`;
   }
