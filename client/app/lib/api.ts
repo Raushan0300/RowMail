@@ -5,6 +5,7 @@ import { getData } from "../config";
 export const getTokenFromCookie = () => {
   const cookieStore = cookies();
   const token = cookieStore.get("token")?.value;
+  console.log(token);
   if (token) {
     redirect("/dashboard");
   } else {
@@ -15,6 +16,7 @@ export const getTokenFromCookie = () => {
 export const checkLocalStorage = () => {
   const cookieStore = cookies();
   const token = cookieStore.get("token")?.value;
+  console.log(token);
   if (!token) {
     redirect("/");
   }
