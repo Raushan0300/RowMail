@@ -1,5 +1,5 @@
 const express = require('express');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
@@ -11,7 +11,7 @@ app.use(cors({
     credentials: true,
 }));
 app.use(express.json());
-app.use(cookieParser());
+// app.use(cookieParser());
 
 const PORT = process.env.PORT;
 

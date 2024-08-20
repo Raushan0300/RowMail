@@ -1,0 +1,22 @@
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request:NextRequest){
+    try {
+        const { searchParams } = new URL(request.url);
+    const token = searchParams.get("token");
+    if(token){
+        const response = NextResponse.redirect(`${process.env.CLIENT_URL}/dashboard`);
+        response.cookies.set("token", token, {
+            httpOnly:true,
+            secure:true,
+            sameSite:"none",
+            path:"/",
+        });
+        return response;
+    }
+    return NextResponse.redirect(`${process.env.CLIENT_URL}`);
+    } catch (error) {
+        console.error(error);
+        return NextResponse.error();
+    }
+}

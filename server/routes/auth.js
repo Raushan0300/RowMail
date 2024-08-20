@@ -18,21 +18,17 @@ router.get('/auth', (req, res)=>{
           ],
     });
     res.redirect(authUrl);
-    console.log('redirected');
 });
 
 router.get('/auth/callback', async(req, res)=>{
-    console.log('callback');
     const code = req.query.code;
 
     try {
         const {tokens}=await oAuth2Client.getToken(code);
-        console.log("tokens generated");
         oAuth2Client.setCredentials(tokens);
 
         const oauth2 = google.oauth2({auth: oAuth2Client, version: 'v2'});
         const {data}= await oauth2.userinfo.get();
-        console.log("data fetched");
 
         const user = await User.findOneAndUpdate(
             {googleId: data.id},
@@ -43,19 +39,17 @@ router.get('/auth/callback', async(req, res)=>{
             },
             {upsert: true, new: true}
         );
-        console.log("user updated");
 
         const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn: '7d'});
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure:process.env.NODE_ENV === 'production',
-            sameSite: 'none',
-            path: '/',
-            domain: '.raushan.xyz',
-        });
-        console.log("cookie set");
-        res.redirect(`${process.env.CLIENT_URL}`);
-        console.log("redirected");
+        // res.cookie('token', token, {
+        //     httpOnly: true,
+        //     secure:process.env.NODE_ENV === 'production',
+        //     sameSite: 'none',
+        //     path: '/',
+        //     domain: '.raushan.xyz',
+        // });
+        res.redirect(`${process.env.CLIENT_URL}?token=${token}`);
+        // res.status(200).json({success: true, token});
     } catch (error) {
         console.log(error);
         res.status(500).send('Something went wrong');
