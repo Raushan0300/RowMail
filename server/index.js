@@ -23,6 +23,7 @@ app.get('/', (req, res)=>{
 
 app.use('/', require('./routes/auth'));
 app.use('/', require('./routes/inbox'));
+app.use('/', require('./routes/email'));
 
 
 app.listen(PORT, ()=>{

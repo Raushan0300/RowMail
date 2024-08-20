@@ -7,10 +7,10 @@ const { listMessage } = require('../controllers/listMessage');
 router.get('/inbox', authenticatedToken, async(req, res) => {
     try {
         const emails = await listMessage();
-        res.json(emails);
+        return res.json(emails);
     } catch (error) {
         console.log(error);
-        res.status(500).send('Something went wrong');
+        return res.status(500).send('Something went wrong');
     }
 });
 

@@ -8,9 +8,10 @@ export async function GET(request:NextRequest){
         const response = NextResponse.redirect(`${process.env.CLIENT_URL}/dashboard`);
         response.cookies.set("token", token, {
             httpOnly:true,
-            secure:true,
-            sameSite:"none",
-            path:"/",
+            secure:false,
+            expires:new Date(Date.now()+1000*60*60*24*7),
+            // sameSite:"none",
+            // path:"/",
         });
         return response;
     }

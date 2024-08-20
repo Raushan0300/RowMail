@@ -17,6 +17,7 @@ const listMessage=async()=>{
         });
         return msg.data;
     }));
+
     const emailData=emailDetails.map((email)=>{
         const emailData={};
         emailData.id=email.id;
@@ -24,9 +25,11 @@ const listMessage=async()=>{
         emailData.date=email.internalDate;
         emailData.from=email.payload.headers.find((header)=>header.name==='From')?.value.match(/^(.*)\s*<(.*)>$/)?.[1];
         emailData.email=email.payload.headers.find((header)=>header.name==='From')?.value.match(/^(.*)\s*<(.*)>$/)?.[2];
+        emailData.labelIds=email.labelIds;
         emailData.payload=email.payload;
         return emailData;
     });
+    
     return emailData;
 };
 
