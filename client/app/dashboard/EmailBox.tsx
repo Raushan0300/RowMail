@@ -13,7 +13,6 @@ const EmailBox = (props:any) => {
       const res = await getData(`email/${messageId}`, {Authorization:`Bearer ${token}`});
       setMessageData(res);
       setLoading(false);
-      console.log(res);
     };
 
     if(messageId){
@@ -39,42 +38,47 @@ const EmailBox = (props:any) => {
     if (!messageData) return null;
 
     try {
-      // Look for HTML content
-      // const htmlPart = messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/html');
-      // if (htmlPart && htmlPart.body && htmlPart.body.data) {
-      //   const htmlContent = decodeBase64(htmlPart.body.data);
-      //   return <div dangerouslySetInnerHTML={{ __html: htmlContent }}></div>;
-      // }
-      if(messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/html')){
-        const htmlPart = messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/html');
-      if (htmlPart && htmlPart.body && htmlPart.body.data) {
-        const htmlContent = decodeBase64(htmlPart.body.data);
-        return <div dangerouslySetInnerHTML={{ __html: htmlContent }}></div>;
-      }
-      } else{
-        const htmlPart = messageData?.payload?.parts?.find((part:any)=>part.mimeType==='multipart/alternative')?.parts?.find((part: any) => part.mimeType === 'text/html');
+      if(messageData?.payload?.mimeType==='multipart/alternative'){
+        if(messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/html')){
+          const htmlPart = messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/html');
         if (htmlPart && htmlPart.body && htmlPart.body.data) {
           const htmlContent = decodeBase64(htmlPart.body.data);
           return <div dangerouslySetInnerHTML={{ __html: htmlContent }}></div>;
         }
-      }
-
-      // Look for plain text content as a fallback
-      // const textPart = messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/plain');
-      // if (textPart && textPart.body && textPart.body.data) {
-      //   const textContent = decodeBase64(textPart.body.data);
-      //   return <pre>{textContent}</pre>;
-      // }
-      if(messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/plain')){
-        const textPart = messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/plain');
-        if (textPart && textPart.body && textPart.body.data) {
-          const textContent = decodeBase64(textPart.body.data);
-          return <pre>{textContent}</pre>;
+        } else{
+          const htmlPart = messageData?.payload?.parts?.find((part:any)=>part.mimeType==='multipart/alternative')?.parts?.find((part: any) => part.mimeType === 'text/html');
+          if (htmlPart && htmlPart.body && htmlPart.body.data) {
+            const htmlContent = decodeBase64(htmlPart.body.data);
+            return <div dangerouslySetInnerHTML={{ __html: htmlContent }}></div>;
+          }
         }
       } else{
-        const textPart = messageData?.payload?.parts?.find((part:any)=>part.mimeType==='multipart/alternative')?.parts?.find((part: any) => part.mimeType === 'text/plain');
-        if (textPart && textPart.body && textPart.body.data) {
-          const textContent = decodeBase64(textPart.body.data);
+        const htmlPart = messageData?.payload?.body?.data;
+        if (htmlPart) {
+          const htmlContent = decodeBase64(htmlPart);
+          return <div dangerouslySetInnerHTML={{ __html: htmlContent }}></div>;
+        }
+      }
+
+
+      if(messageData?.payload?.mimeType==='multipart/alternative'){
+        if(messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/plain')){
+          const textPart = messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/plain');
+          if (textPart && textPart.body && textPart.body.data) {
+            const textContent = decodeBase64(textPart.body.data);
+            return <pre>{textContent}</pre>;
+          }
+        } else{
+          const textPart = messageData?.payload?.parts?.find((part:any)=>part.mimeType==='multipart/alternative')?.parts?.find((part: any) => part.mimeType === 'text/plain');
+          if (textPart && textPart.body && textPart.body.data) {
+            const textContent = decodeBase64(textPart.body.data);
+            return <pre>{textContent}</pre>;
+          }
+        }
+      } else{
+        const textPart = messageData?.payload?.body?.data;
+        if (textPart) {
+          const textContent = decodeBase64(textPart);
           return <pre>{textContent}</pre>;
         }
       }
