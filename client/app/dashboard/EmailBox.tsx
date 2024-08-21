@@ -38,7 +38,7 @@ const EmailBox = (props:any) => {
     if (!messageData) return null;
 
     try {
-      if(messageData?.payload?.mimeType==='multipart/alternative'){
+      if(messageData?.payload?.mimeType==='multipart/alternative' || messageData?.payload?.mimeType==='multipart/mixed'){
         if(messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/html')){
           const htmlPart = messageData?.payload?.parts?.find((part: any) => part.mimeType === 'text/html');
         if (htmlPart && htmlPart.body && htmlPart.body.data) {
