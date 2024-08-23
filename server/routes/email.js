@@ -21,6 +21,9 @@ router.get("/email/:id", authenticatedToken, async (req, res) => {
         from: email.data.payload.headers.find(
           (header) => header.name === "From"
         ).value,
+        to: email.data.payload.headers.find(
+          (header) => header.name === "To"
+        ).value,
         subject: email.data.payload.headers.find(
           (header) => header.name === "Subject"
         ).value,

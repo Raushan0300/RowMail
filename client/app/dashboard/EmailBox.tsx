@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { getData } from "../config";
 import { CircularProgress } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Image from "next/image";
+import DOMPurify from 'dompurify';
 
 const EmailBox = (props:any) => {
   const {messageId, token}=props;
@@ -73,7 +75,7 @@ const EmailBox = (props:any) => {
             });
 
   return (
-    <div className={`flex flex-col justify-between w-[75%] bg-[#FAFAFA] h-screen py-2.5`}>
+    <div className={`flex flex-col justify-between w-[75%] bg-white h-screen py-2.5`}>
       {loading?<div className="flex justify-center items-center h-full"><CircularProgress /></div>:<div className="flex flex-col h-full">
         {messageData?.emailData&&<div className="flex flex-col h-full">
         <div className="flex justify-between items-center py-2.5 px-5 border-b pb-2">
@@ -82,15 +84,21 @@ const EmailBox = (props:any) => {
         <div className="mt-2 px-5 border-b-2">
           <h1 className="text-xl font-bold">{messageData?.subject}</h1>
           <div className="flex justify-between items-center py-2">
+          <div className="flex gap-2 justify-center items-center">
+          <Image src="/vercel.svg" alt="" width={50} height={50} />
+            <div className="flex flex-col">
             <div className="flex items-center gap-3">
               <h1 className="text-[14px] font-semibold text-[#0E0E23]">{messageData?.from?.match(/^(.*)\s<(.+)>$/)[1]}</h1>
               <h3 className="text-[12px] text-[#8A95AD]">{messageData?.from?.match(/^(.*)\s<(.+)>$/)[2]}</h3>
             </div>
-            <span className="text-[12px] text-[#8A95AD]">{formattedDate}</span>
+            <h3 className="text-[12px] text-[#8A95AD]">To: <span className="text-[#0E0E23]">{messageData.to}</span></h3>
             </div>
+            </div>
+            <span className="text-[12px] text-[#8A95AD]">{formattedDate}</span>
+          </div>
         </div>
         <div className="flex-grow overflow-auto scrollbar-hide px-5 mt-4">
-          <div dangerouslySetInnerHTML={{__html:decodeBase64(messageData?.emailData)}}></div>
+          <div dangerouslySetInnerHTML={{__html:DOMPurify.sanitize(decodeBase64(messageData.emailData))}}></div>
           </div>
           </div>}
         </div>}

@@ -2,12 +2,13 @@
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import EmailBox from './EmailBox';
 import { useState } from 'react';
+import he from 'he';
 
 const SelectedOption = (props:any) => {
     const {messages, token} = props;
     const [messageId, setMessageId] = useState<any>('');
   return (
-    <div className='flex w-[85%]'>
+    <div className='flex w-[85%] bg-white'>
     <div className="flex flex-col w-[25%] h-screen py-2.5 border-r-2">
         <div className="flex justify-between border-b pb-2">
         <div className="flex items-center px-2 gap-3 w-[50%]">
@@ -35,7 +36,7 @@ const SelectedOption = (props:any) => {
                 <div>
                 <h1 className={`text-[14px] text-[#0E0E23] ${message.labelIds.includes("UNREAD")?'font-bold':'font-regular'}`}>{message.from}</h1>
                 <h3 className={`text-[12px] text-[#0E0E23] ${message.labelIds.includes("UNREAD")?'font-semibold':'font-regular'}`}>{subjectHeader.length>25?subjectHeader.substring(0,25)+'...':subjectHeader || 'No Subject'}</h3>
-                <p className='text-[10px] text-[#8A95AD]'>{message.snippet.length>20?message.snippet.substring(0, 60)+'...':message.snippet}</p>
+                <div className='text-[10px] text-[#8A95AD]'>{message.snippet.length>20?(he.decode(message?.snippet))?.substring(0, 60)+'...':he.decode(message.snippet)}</div>
                 </div>
                 <span className="text-[12px] text-[#8A95AD]">{formattedDate}</span>
                 </div>
