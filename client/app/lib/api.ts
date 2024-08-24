@@ -28,6 +28,12 @@ export const getInboxMessages = async () => {
   return response;
 };
 
+export const getMyProfile = async()=>{
+  const token=getToken();
+  const response = await getData('user', {Authorization:`Bearer ${token}`});
+  return response;
+}
+
 // export const getEmailById=async(id:string)=>{
 //   const cookieStore=cookies();
 //   const token = cookieStore.get("token")?.value;

@@ -6,7 +6,8 @@ const { listMessage } = require("../controllers/listMessage");
 
 router.get("/inbox", authenticatedToken, async (req, res) => {
   try {
-    const emails = await listMessage();
+    const {pageToken} = req.query;
+    const emails = await listMessage(pageToken);
     return res.json(emails);
   } catch (error) {
     console.log(error);

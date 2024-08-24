@@ -35,6 +35,9 @@ router.get("/auth/callback", async (req, res) => {
         googleId: data.id,
         accessToken: tokens.access_token,
         refreshToken: tokens.refresh_token,
+        email: data.email,
+        name: data.name,
+        profilePic: data.picture,
       },
       { upsert: true, new: true }
     );

@@ -2,14 +2,16 @@ const { google } = require("googleapis");
 
 const { oAuth2Client } = require("./googleOAuth2Client");
 
-const listMessage = async () => {
+const listMessage = async (pageToken=null) => {
   const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
   const res = await gmail.users.messages.list({
     userId: "me",
     labelIds: ["INBOX"],
-    maxResults: 10,
+    maxResults: 100,
+    pageToken: pageToken,
   });
   const messages = res.data.messages || [];
+  const nextPageToken = res.data.nextPageToken || null;
   const emailDetails = await Promise.all(
     messages.map(async (messages) => {
       const msg = await gmail.users.messages.get({
@@ -35,8 +37,9 @@ const listMessage = async () => {
     emailData.payload = email.payload;
     return emailData;
   });
+  // emailData.nextPageToken = nextPageToken;
 
-  return emailData;
+  return {emails: emailData, nextPageToken};
 };
 
 module.exports = { listMessage };
