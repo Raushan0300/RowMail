@@ -12,7 +12,6 @@ const SelectedOption = (props:any) => {
     const [messageId, setMessageId] = useState<any>('');
     const [nextPageToken, setNextPageToken] = useState<string | null>(messages.nextPageToken || null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [unreadEmailCount, setUnreadEmailCount] = useState<number>(0);
 
     const fetchEmails = useCallback(async (pageToken: string | null = null) => {
         try {
@@ -34,8 +33,22 @@ const SelectedOption = (props:any) => {
       },[token]);
 
       useEffect(()=>{
-        setUnreadEmailCount(emails.filter((email:any)=>email?.labelIds?.includes("UNREAD")).length);
-      },[emails]);
+        if(messageId){
+          const emailIndex = emails.findIndex((email:any)=>email.id===messageId);
+          if(emailIndex!==-1){
+            // const updatedEmails = [...emails];
+            // updatedEmails[emailIndex].labelIds = updatedEmails[emailIndex].labelIds.filter((label:any)=>label!=='UNREAD');
+            // setEmails(updatedEmails);
+            const updatedEmails = emails.map((email:any)=>{
+              if(email.id===messageId){
+                email.labelIds = email.labelIds.filter((label:any)=>label!=='UNREAD');
+              }
+              return email;
+            });
+            setEmails(updatedEmails);
+          }
+        }
+      },[messageId]);
 
     //   const handleScroll = () => {
     //     console.log('scrolling');
@@ -78,7 +91,7 @@ const SelectedOption = (props:any) => {
         <div className="flex justify-between border-b pb-2">
         <div className="flex items-center px-2 gap-3 w-[50%]">
         <h1 className="text-lg font-bold">{showSelectedOption()}</h1>
-        <span className="text-[10px] text-[#8A95AD]">{unreadEmailCount}/{emails.length} Unread</span>
+        {/* <span className="text-[10px] text-[#8A95AD]">{unreadEmailCount}/{emails.length} Unread</span> */}
         </div>
         <div className='flex gap-1 mr-2 items-center bg-[#F6F6F6] rounded-[5px] w-[50%] px-2'>
         <SearchOutlinedIcon className="text-[#8A95AD] text-[18px]" />
@@ -86,7 +99,7 @@ const SelectedOption = (props:any) => {
         </div>
         </div>
         <div className='overflow-auto scrollbar-hide'>
-        {messages !== 500 || emails!==500?emails.map((email:any) => {
+        {emails.length>0?emails.map((email:any) => {
             const subjectHeader = email?.payload?.headers?.find((header:any)=>header.name==='Subject')?.value;
             const date = new Date(Number(email?.date));
             const formattedDate = date.toLocaleString('en-US', {
@@ -97,7 +110,7 @@ const SelectedOption = (props:any) => {
                 minute: '2-digit',
             });
             return(
-                <div className={`flex gap-2 justify-between items-center py-2 px-2 border-b cursor-pointer ${email?.labelIds?.includes("UNREAD")?'bg-white':'bg-[#F6F6F6]'}`} key={email?.id} onClick={()=>{setMessageId(email?.id)}}>
+                <div className={`flex gap-2 justify-between items-center py-2 px-2 border-b cursor-pointer ${email.id===messageId?'bg-[rgba(120,175,211,0.2)]':`${email?.labelIds?.includes("UNREAD")?'bg-white':'bg-[#F6F6F6]'}`}`} key={email?.id} onClick={()=>{setMessageId(email?.id)}}>
                 <div>
                 <h1 className={`text-[14px] text-[#0E0E23] ${email?.labelIds?.includes("UNREAD")?'font-bold':'font-regular'}`}>{email?.from}</h1>
                 <h3 className={`text-[12px] text-[#0E0E23] ${email?.labelIds?.includes("UNREAD")?'font-semibold':'font-regular'}`}>{subjectHeader?.length>25?subjectHeader?.substring(0,25)+'...':subjectHeader || 'No Subject'}</h3>
@@ -111,7 +124,7 @@ const SelectedOption = (props:any) => {
             <span className='text-[#E4080A] text-[12px]'>Please, Try Again!!</span>
             <button className='bg-[#4834F6] mt-2 py-1.5 px-4 rounded-[10px] text-[12px] text-white'>Refresh</button>
             </div>}
-            {loading?<div className='flex justify-center items-center h-[10vh]'><CircularProgress /></div>:<div className='flex justify-center items-center h-[5vh] text-[12px] w-full cursor-pointer text-[#1ea1f7]' onClick={()=>{fetchEmails(nextPageToken)}}>Load More</div>}
+            {loading?<div className='flex justify-center items-center h-[10vh]'><CircularProgress /></div>:<div className={`flex justify-center items-center h-[5vh] text-[12px] w-full cursor-pointer text-[#1ea1f7] ${emails.length==0&&'hidden'}`} onClick={()=>{fetchEmails(nextPageToken)}}>Load More</div>}
         </div>
     </div>
     <EmailBox messageId={messageId} token={token} />

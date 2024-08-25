@@ -22,7 +22,7 @@ const postData = async(url: string, data: any, customHeader:any) => {
         });
         return response.data;
     } catch (error: any) {
-        return error.response?.data;
+        return error.response?.status;
     }
 };
 

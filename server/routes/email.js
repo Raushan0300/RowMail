@@ -28,6 +28,7 @@ router.get("/email/:id", authenticatedToken, async (req, res) => {
           (header) => header.name === "Subject"
         ).value,
         date: email.data.internalDate,
+        labelIds: email.data.labelIds,
         emailData,
       });
   } catch (error) {

@@ -19,47 +19,47 @@ const SidebarOption = (props:any) => {
         {/* <h1 className="text-xl font-bold border-b border-dashed pb-2">Dashboard</h1> */}
         <div className='flex items-center gap-5'>
         <Image src="/logo.svg" alt="RowMail" width={50} height={50} />
-        <h1 className='text-xl font-bold logo-font text-[#28A9BB]'>RowMail</h1>
+        {/* <h1 className='text-xl font-bold logo-font text-[#28A9BB]'>RowMail</h1> */}
         </div>
-        <button className="mt-2 py-1.5 w-full bg-[#4834F6] rounded-[10px] text-[12px] text-white">Compose</button>
+        <button className="mt-2 py-1.5 w-full bg-[#4834F6] rounded-[10px] text-[12px] text-white hover:bg-[#357ABD]">Compose</button>
         <div className="flex flex-col gap-[5px] mt-[15px] text-[14px] text-[#0E0E23]">
         {/* <div className="flex justify-between items-center"> */}
           <div className={`flex gap-2 items-center cursor-pointer ${selectedOption==0&&'bg-[rgba(120,175,211,0.5)]'} rounded-[5px] py-1.5 px-2`} onClick={()=>{setSelectedOption(0)}}>
-            <InboxIcon className='text-[#808DA6]' />
+            <InboxIcon className={selectedOption==0?'text-[#0E0E23]':'text-[#808DA6]'} />
             <span>Inbox</span>
           </div>
         {/* </div> */}
         {/* <div className="flex justify-between items-center"> */}
           <div className={`flex gap-2 items-center cursor-pointer ${selectedOption==1&&'bg-[rgba(120,175,211,0.5)]'} rounded-[5px] py-1.5 px-2`} onClick={()=>{setSelectedOption(1)}}>
-            <StarBorderIcon className='text-[#808DA6]' />
+            <StarBorderIcon className={selectedOption==1?'text-[#0E0E23]':'text-[#808DA6]'} />
             <span>Starred</span>
           </div>
           {/* <span className="text-[#8A95AD]">1234</span> */}
         {/* </div> */}
         {/* <div className="flex justify-between items-center"> */}
           <div className={`flex gap-2 items-center cursor-pointer ${selectedOption==2&&'bg-[rgba(120,175,211,0.5)]'} rounded-[5px] py-1.5 px-2`} onClick={()=>{setSelectedOption(2)}}>
-            <QueryBuilderIcon className='text-[#808DA6]' />
+            <QueryBuilderIcon className={selectedOption==2?'text-[#0E0E23]':'text-[#808DA6]'} />
             <span>Snoozed</span>
           </div>
           {/* <span className="text-[#8A95AD]">1234</span> */}
         {/* </div> */}
         {/* <div className="flex justify-between items-center"> */}
           <div className={`flex gap-2 items-center cursor-pointer ${selectedOption==3&&'bg-[rgba(120,175,211,0.5)]'} rounded-[5px] py-1.5 px-2`} onClick={()=>{setSelectedOption(3)}}>
-            <SendOutlinedIcon className='text-[#808DA6]' />
+            <SendOutlinedIcon className={selectedOption==3?'text-[#0E0E23]':'text-[#808DA6]'} />
             <span>Sent</span>
           </div>
           {/* <span className="text-[#8A95AD]">1234</span> */}
         {/* </div> */}
         {/* <div className="flex justify-between items-center"> */}
           <div className={`flex gap-2 items-center cursor-pointer ${selectedOption==4&&'bg-[rgba(120,175,211,0.5)]'} rounded-[5px] py-1.5 px-2`} onClick={()=>{setSelectedOption(4)}}>
-            <InsertDriveFileOutlinedIcon className='text-[#808DA6]' />
+            <InsertDriveFileOutlinedIcon className={selectedOption==4?'text-[#0E0E23]':'text-[#808DA6]'} />
             <span>Drafts</span>
           </div>
           {/* <span className="text-[#8A95AD]">1234</span> */}
         {/* </div> */}
         {/* <div className="flex justify-between items-center"> */}
           <div className={`flex gap-2 items-center cursor-pointer ${selectedOption==5&&'bg-[rgba(120,175,211,0.5)]'} rounded-[5px] py-1.5 px-2`} onClick={()=>{setSelectedOption(5)}}>
-            <DeleteOutlinedIcon className='text-[#808DA6]' />
+            <DeleteOutlinedIcon className={selectedOption==5?'text-[#0E0E23]':'text-[#808DA6]'} />
             <span>Trash</span>
           </div>
           {/* <span className="text-[#8A95AD]">1234</span> */}

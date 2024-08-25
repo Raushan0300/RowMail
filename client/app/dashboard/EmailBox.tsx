@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from "react";
-import { getData } from "../config";
+import { getData, postData } from "../config";
 import { CircularProgress } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Image from "next/image";
@@ -23,6 +23,18 @@ const EmailBox = (props:any) => {
       getEmailData();
     }
   },[messageId]);
+
+  const markRead=async()=>{
+    await postData(`markRead`, {'messageId':messageId}, {Authorization:`Bearer ${token}`});
+  };
+
+  useEffect(()=>{
+    if(messageData?.labelIds?.includes('UNREAD')){
+      markRead();
+    }
+  },[messageData]);
+
+
 
   const decodeBase64 = (str: string) => {
     try {
