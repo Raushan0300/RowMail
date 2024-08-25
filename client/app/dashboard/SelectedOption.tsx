@@ -7,14 +7,14 @@ import { getData } from '../config';
 import { CircularProgress } from '@mui/material';
 
 const SelectedOption = (props:any) => {
-    const {messages, token} = props;
+    const {messages, token, selectedOption} = props;
     const [emails, setEmails] = useState<any>(messages.emails || []);
     const [messageId, setMessageId] = useState<any>('');
     const [nextPageToken, setNextPageToken] = useState<string | null>(messages.nextPageToken || null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [unreadEmailCount, setUnreadEmailCount] = useState<number>(0);
 
     const fetchEmails = useCallback(async (pageToken: string | null = null) => {
-      console.log('fetching emails');
         try {
           setLoading(true);
           const res = await getData(`inbox?pageToken=${pageToken || ''}`, { 'Authorization': `Bearer ${token}` },);
@@ -32,6 +32,10 @@ const SelectedOption = (props:any) => {
           setLoading(false);
         }
       },[token]);
+
+      useEffect(()=>{
+        setUnreadEmailCount(emails.filter((email:any)=>email?.labelIds?.includes("UNREAD")).length);
+      },[emails]);
 
     //   const handleScroll = () => {
     //     console.log('scrolling');
@@ -52,13 +56,29 @@ const SelectedOption = (props:any) => {
     //         window.removeEventListener('scroll', handleScroll);
     //     };
     //   }, []);
+    const showSelectedOption = () => {
+      switch (selectedOption) {
+        case 0:
+          return 'Inbox';
+        case 1:
+          return 'Starred';
+        case 2:
+          return 'Snoozed';
+        case 3:
+          return 'Sent';
+        case 4:
+          return 'Drafts';
+        case 5:
+          return 'Trash';
+      }
+    };
   return (
     <div className='flex w-[85%] bg-white'>
     <div className="flex flex-col w-[25%] h-screen py-2.5 border-r-2">
         <div className="flex justify-between border-b pb-2">
         <div className="flex items-center px-2 gap-3 w-[50%]">
-        <h1 className="text-xl font-bold">Inbox</h1>
-        <span className="text-[10px] text-[#8A95AD]">421 Unread</span>
+        <h1 className="text-lg font-bold">{showSelectedOption()}</h1>
+        <span className="text-[10px] text-[#8A95AD]">{unreadEmailCount}/{emails.length} Unread</span>
         </div>
         <div className='flex gap-1 mr-2 items-center bg-[#F6F6F6] rounded-[5px] w-[50%] px-2'>
         <SearchOutlinedIcon className="text-[#8A95AD] text-[18px]" />
@@ -91,7 +111,7 @@ const SelectedOption = (props:any) => {
             <span className='text-[#E4080A] text-[12px]'>Please, Try Again!!</span>
             <button className='bg-[#4834F6] mt-2 py-1.5 px-4 rounded-[10px] text-[12px] text-white'>Refresh</button>
             </div>}
-            {loading?<div className='flex justify-center items-center h-[10vh]'><CircularProgress /></div>:<div className='flex justify-center items-center h-[5vh] text-[12px] w-full cursor-pointer' onClick={()=>{fetchEmails(nextPageToken)}}>Load More</div>}
+            {loading?<div className='flex justify-center items-center h-[10vh]'><CircularProgress /></div>:<div className='flex justify-center items-center h-[5vh] text-[12px] w-full cursor-pointer text-[#1ea1f7]' onClick={()=>{fetchEmails(nextPageToken)}}>Load More</div>}
         </div>
     </div>
     <EmailBox messageId={messageId} token={token} />

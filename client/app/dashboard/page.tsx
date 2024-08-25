@@ -9,8 +9,8 @@ const Dashboard = async() => {
   const token=getToken();
   return (
     <div className="flex justify-between items-center">
-      <SidebarOption profile={myProfile} />
-      <SelectedOption messages={messages} token={token} />
+      <SidebarOption profile={myProfile} messages={messages} token={token} />
+      {/* <SelectedOption messages={messages} token={token} /> */}
     </div>
   )
 };
