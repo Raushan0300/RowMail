@@ -8,9 +8,9 @@ import { CircularProgress } from '@mui/material';
 
 const SelectedOption = (props:any) => {
     const {messages, token, selectedOption} = props;
-    const [emails, setEmails] = useState<any>(messages.emails || []);
+    const [emails, setEmails] = useState<any>(messages?.emails || []);
     const [messageId, setMessageId] = useState<any>('');
-    const [nextPageToken, setNextPageToken] = useState<string | null>(messages.nextPageToken || null);
+    const [nextPageToken, setNextPageToken] = useState<string | null>(messages?.nextPageToken || null);
     const [loading, setLoading] = useState<boolean>(false);
 
     const fetchEmails = useCallback(async (pageToken: string | null = null) => {
@@ -48,7 +48,7 @@ const SelectedOption = (props:any) => {
             setEmails(updatedEmails);
           }
         }
-      },[messageId]);
+      },[messageId, emails]);
 
     //   const handleScroll = () => {
     //     console.log('scrolling');
@@ -102,13 +102,10 @@ const SelectedOption = (props:any) => {
         {emails.length>0?emails.map((email:any) => {
             const subjectHeader = email?.payload?.headers?.find((header:any)=>header.name==='Subject')?.value;
             const date = new Date(Number(email?.date));
-            const formattedDate = date.toLocaleString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-            });
+            const now = new Date();
+            const isSameDay = date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+            const isSameYear = date.getFullYear() === now.getFullYear();
+            const formattedDate = isSameDay ? date.toLocaleTimeString(['en-US'], { hour: '2-digit', minute: '2-digit' }) : isSameYear ? date.toLocaleDateString(['en-US'], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : date.toLocaleDateString(['en-US'], { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
             return(
                 <div className={`flex gap-2 justify-between items-center py-2 px-2 border-b cursor-pointer ${email.id===messageId?'bg-[rgba(120,175,211,0.2)]':`${email?.labelIds?.includes("UNREAD")?'bg-white':'bg-[#F6F6F6]'}`}`} key={email?.id} onClick={()=>{setMessageId(email?.id)}}>
                 <div>

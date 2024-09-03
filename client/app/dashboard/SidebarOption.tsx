@@ -67,10 +67,10 @@ const SidebarOption = (props:any) => {
         </div>
         </div>
         <div className="flex gap-2 items-center">
-          <img src={profile.profilePic} alt={profile.name} width={40} className='rounded-full' />
+          <img src={profile?.profilePic} alt={profile?.name} width={40} className='rounded-full' />
           <div className='flex flex-col flex-wrap'>
-            <h1 className="text-[12px] font-bold text-wrap">{profile.name}</h1>
-            <p className="text-[10px] text-[#8A95AD] text-wrap">{profile.email}</p>
+            <h1 className="text-[12px] font-bold text-wrap">{profile?.name}</h1>
+            <p className="text-[10px] text-[#8A95AD] text-wrap">{profile?.email}</p>
           </div>
         </div>
       </div>

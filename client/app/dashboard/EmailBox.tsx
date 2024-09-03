@@ -22,17 +22,16 @@ const EmailBox = (props:any) => {
     if(messageId){
       getEmailData();
     }
-  },[messageId]);
-
-  const markRead=async()=>{
-    await postData(`markRead`, {'messageId':messageId}, {Authorization:`Bearer ${token}`});
-  };
+  },[messageId, token]);
 
   useEffect(()=>{
+    const markRead=async()=>{
+      await postData(`markRead`, {'messageId':messageId}, {Authorization:`Bearer ${token}`});
+    };
     if(messageData?.labelIds?.includes('UNREAD')){
       markRead();
     }
-  },[messageData]);
+  },[messageData, messageId, token]);
 
 
 
@@ -78,13 +77,10 @@ const EmailBox = (props:any) => {
   // };
 
   const date = new Date(Number(messageData?.date));
-            const formattedDate = date.toLocaleString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-            });
+  const now = new Date();
+  const isSameDay = date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+  const isSameYear = date.getFullYear() === now.getFullYear();
+  const formattedDate = isSameDay ? date.toLocaleTimeString(['en-US'], { hour: '2-digit', minute: '2-digit' }) : isSameYear ? date.toLocaleDateString(['en-US'], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : date.toLocaleDateString(['en-US'], { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
   return (
     <div className={`flex flex-col justify-between w-[75%] bg-white h-screen py-2.5`}>
@@ -100,8 +96,8 @@ const EmailBox = (props:any) => {
           <Image src="/vercel.svg" alt="" width={50} height={50} />
             <div className="flex flex-col">
             <div className="flex items-center gap-3">
-              <h1 className="text-[14px] font-semibold text-[#0E0E23]">{messageData?.from?.match(/^(.*)\s<(.+)>$/)[1]}</h1>
-              <h3 className="text-[12px] text-[#8A95AD]">{messageData?.from?.match(/^(.*)\s<(.+)>$/)[2]}</h3>
+              <h1 className="text-[14px] font-semibold text-[#0E0E23]">{messageData?.from?.match(/^(.*)\s<(.+)>$/)?.[1] ?? messageData?.from}</h1>
+              <h3 className="text-[12px] text-[#8A95AD]">{messageData?.from?.match(/^(.*)\s<(.+)>$/)?.[2]}</h3>
             </div>
             <h3 className="text-[12px] text-[#8A95AD]">To: <span className="text-[#0E0E23]">{messageData.to}</span></h3>
             </div>
@@ -116,6 +112,6 @@ const EmailBox = (props:any) => {
         </div>}
     </div>
   )
-}
+};
 
 export default EmailBox;

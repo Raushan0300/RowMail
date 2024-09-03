@@ -1,10 +1,8 @@
 'use client';
 
-import { getTokenFromURL } from "./lib/api";
-
 export default function PageClient() {
   const handleLogin = async()=>{
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth`;
+    window.location.href = `/api/auth`;
   }
   return (
     <div className='flex flex-col justify-center items-center h-screen'>
