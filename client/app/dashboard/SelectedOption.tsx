@@ -32,23 +32,41 @@ const SelectedOption = (props:any) => {
         }
       },[token]);
 
-      useEffect(()=>{
+      // useEffect(()=>{
+      //   if(messageId){
+      //     const emailIndex = emails.findIndex((email:any)=>email.id===messageId);
+      //     if(emailIndex!==-1){
+      //       // const updatedEmails = [...emails];
+      //       // updatedEmails[emailIndex].labelIds = updatedEmails[emailIndex].labelIds.filter((label:any)=>label!=='UNREAD');
+      //       // setEmails(updatedEmails);
+      //       const updatedEmails = emails.map((email:any)=>{
+      //         if(email.id===messageId){
+      //           email.labelIds = email.labelIds.filter((label:any)=>label!=='UNREAD');
+      //         }
+      //         return email;
+      //       });
+      //       setEmails(updatedEmails);
+      //     }
+      //   }
+      // },[messageId, emails]);
+
+      const markRead = async () => {
         if(messageId){
-          const emailIndex = emails.findIndex((email:any)=>email.id===messageId);
-          if(emailIndex!==-1){
-            // const updatedEmails = [...emails];
-            // updatedEmails[emailIndex].labelIds = updatedEmails[emailIndex].labelIds.filter((label:any)=>label!=='UNREAD');
-            // setEmails(updatedEmails);
-            const updatedEmails = emails.map((email:any)=>{
-              if(email.id===messageId){
-                email.labelIds = email.labelIds.filter((label:any)=>label!=='UNREAD');
+              const emailIndex = emails.findIndex((email:any)=>email.id===messageId);
+              if(emailIndex!==-1){
+                // const updatedEmails = [...emails];
+                // updatedEmails[emailIndex].labelIds = updatedEmails[emailIndex].labelIds.filter((label:any)=>label!=='UNREAD');
+                // setEmails(updatedEmails);
+                const updatedEmails = emails.map((email:any)=>{
+                  if(email.id===messageId){
+                    email.labelIds = email.labelIds.filter((label:any)=>label!=='UNREAD');
+                  }
+                  return email;
+                });
+                setEmails(updatedEmails);
               }
-              return email;
-            });
-            setEmails(updatedEmails);
-          }
-        }
-      },[messageId, emails]);
+            }
+      };
 
     //   const handleScroll = () => {
     //     console.log('scrolling');
@@ -107,7 +125,7 @@ const SelectedOption = (props:any) => {
             const isSameYear = date.getFullYear() === now.getFullYear();
             const formattedDate = isSameDay ? date.toLocaleTimeString(['en-US'], { hour: '2-digit', minute: '2-digit' }) : isSameYear ? date.toLocaleDateString(['en-US'], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : date.toLocaleDateString(['en-US'], { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
             return(
-                <div className={`flex gap-2 justify-between items-center py-2 px-2 border-b cursor-pointer ${email.id===messageId?'bg-[rgba(120,175,211,0.2)]':`${email?.labelIds?.includes("UNREAD")?'bg-white':'bg-[#F6F6F6]'}`}`} key={email?.id} onClick={()=>{setMessageId(email?.id)}}>
+                <div className={`flex gap-2 justify-between items-center py-2 px-2 border-b cursor-pointer ${email.id===messageId?'bg-[rgba(120,175,211,0.2)]':`${email?.labelIds?.includes("UNREAD")?'bg-white':'bg-[#F6F6F6]'}`}`} key={email?.id} onClick={()=>{setMessageId(email?.id); markRead();}}>
                 <div>
                 <h1 className={`text-[14px] text-[#0E0E23] ${email?.labelIds?.includes("UNREAD")?'font-bold':'font-regular'}`}>{email?.from}</h1>
                 <h3 className={`text-[12px] text-[#0E0E23] ${email?.labelIds?.includes("UNREAD")?'font-semibold':'font-regular'}`}>{subjectHeader?.length>25?subjectHeader?.substring(0,25)+'...':subjectHeader || 'No Subject'}</h3>
@@ -124,7 +142,7 @@ const SelectedOption = (props:any) => {
             {loading?<div className='flex justify-center items-center h-[10vh]'><CircularProgress /></div>:<div className={`flex justify-center items-center h-[5vh] text-[12px] w-full cursor-pointer text-[#1ea1f7] ${emails.length==0&&'hidden'}`} onClick={()=>{fetchEmails(nextPageToken)}}>Load More</div>}
         </div>
     </div>
-    <EmailBox messageId={messageId} token={token} />
+    {messageId&&<EmailBox messageId={messageId} token={token} />}
     </div>
   )
 };

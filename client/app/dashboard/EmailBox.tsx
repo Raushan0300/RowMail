@@ -24,14 +24,25 @@ const EmailBox = (props:any) => {
     }
   },[messageId, token]);
 
-  useEffect(()=>{
-    const markRead=async()=>{
-      await postData(`markRead`, {'messageId':messageId}, {Authorization:`Bearer ${token}`});
+  // useEffect(()=>{
+  //   const markRead=async()=>{
+  //     await postData(`markRead`, {'messageId':messageId}, {Authorization:`Bearer ${token}`});
+  //   };
+  //   if(messageData?.labelIds?.includes('UNREAD')){
+  //     markRead();
+  //   }
+  // },[messageData, messageId, token]);
+  useEffect(() => {
+    const markRead = async () => {
+      if (messageData?.labelIds?.includes('UNREAD')) {
+        await postData(`markRead`, { 'messageId': messageId }, { Authorization: `Bearer ${token}` });
+      }
     };
-    if(messageData?.labelIds?.includes('UNREAD')){
+
+    if (messageData?.labelIds?.includes('UNREAD')) {
       markRead();
     }
-  },[messageData, messageId, token]);
+  }, [messageData, messageId, token]);
 
 
 

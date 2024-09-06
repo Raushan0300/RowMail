@@ -24,7 +24,7 @@ require('./connection');
 
 nextApp.prepare().then(() => {
 
-    // app.use('/_next', express.static('client/.next/static'));
+    app.use('/_next', express.static('client/.next/static'));
 
     // Handle all other routes with Next.js
     app.get('*', (req, res) => {
