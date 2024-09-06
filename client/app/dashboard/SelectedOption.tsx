@@ -1,7 +1,7 @@
 'use client';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import EmailBox from './EmailBox';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import he from 'he';
 import { getData } from '../config';
 import { CircularProgress } from '@mui/material';
@@ -104,8 +104,8 @@ const SelectedOption = (props:any) => {
       }
     };
   return (
-    <div className='flex w-[85%] bg-white'>
-    <div className="flex flex-col w-[25%] h-screen py-2.5 border-r-2">
+    <div className='flex w-full sm:w-[85%] bg-white'>
+    <div className={`${messageId&&'hidden'} sm:flex flex-col w-full sm:w-[25%] h-screen py-2.5 border-r-2`}>
         <div className="flex justify-between border-b pb-2">
         <div className="flex items-center px-2 gap-3 w-[50%]">
         <h1 className="text-lg font-bold">{showSelectedOption()}</h1>
@@ -142,7 +142,7 @@ const SelectedOption = (props:any) => {
             {loading?<div className='flex justify-center items-center h-[10vh]'><CircularProgress /></div>:<div className={`flex justify-center items-center h-[5vh] text-[12px] w-full cursor-pointer text-[#1ea1f7] ${emails.length==0&&'hidden'}`} onClick={()=>{fetchEmails(nextPageToken)}}>Load More</div>}
         </div>
     </div>
-    {messageId&&<EmailBox messageId={messageId} token={token} />}
+    {messageId&&<EmailBox messageId={messageId} setMessageId={setMessageId} token={token} />}
     </div>
   )
 };

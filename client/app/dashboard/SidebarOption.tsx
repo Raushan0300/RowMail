@@ -14,7 +14,7 @@ const SidebarOption = (props:any) => {
   const [selectedOption, setSelectedOption] = useState<number>(0);
   return (
     <div className='flex w-full'>
-    <div className="flex flex-col justify-between w-[15%] bg-[#FAFAFA] h-screen px-5 py-2.5 border-r-2">
+    <div className="hidden sm:flex flex-col justify-between w-[15%] bg-[#FAFAFA] h-screen px-5 py-2.5 border-r-2">
         <div>
         {/* <h1 className="text-xl font-bold border-b border-dashed pb-2">Dashboard</h1> */}
         <div className='flex items-center gap-5'>
