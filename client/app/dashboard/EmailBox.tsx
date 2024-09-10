@@ -12,6 +12,7 @@ const EmailBox = (props:any) => {
   const {messageId, setMessageId, token}=props;
   const [messageData, setMessageData] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [userPic, setUserPic] = useState<string>('');
   
   useEffect(()=>{
     const getEmailData=async()=>{
@@ -38,6 +39,16 @@ const EmailBox = (props:any) => {
     }
   }, [messageData, messageId, token]);
 
+  const getUserPic = async(email:string)=>{
+    const res = await getData(`getUserPic`,{Authorization:`Bearer ${token}`, email:email});
+    setUserPic(res.profilePic);
+  }
+
+  useEffect(()=>{
+    if(messageData?.from){
+      getUserPic(messageData?.from?.match(/^(.*)\s<(.+)>$/)?.[2]);
+    }
+  }, [messageData]);
 
 
   const decodeBase64 = (str: string) => {
@@ -102,7 +113,7 @@ const EmailBox = (props:any) => {
           <h1 className="text-lg sm:text-xl font-bold">{messageData?.subject}</h1>
           <div className="flex justify-between items-center py-2">
           <div className="flex gap-2 justify-center items-center">
-          <Image src="/vercel.svg" alt="" width={40} height={40} />
+          <img src={userPic} alt="" width={40} height={40} />
             <div className="flex flex-col">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <h1 className="text-[12px] sm:text-[14px] font-semibold text-[#0E0E23]">{messageData?.from?.match(/^(.*)\s<(.+)>$/)?.[1] ?? messageData?.from}</h1>

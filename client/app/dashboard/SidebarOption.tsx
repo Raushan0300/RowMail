@@ -8,15 +8,21 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Image from 'next/image';
 import { useState } from 'react';
 import SelectedOption from './SelectedOption';
+import CloseIcon from '@mui/icons-material/Close';
 
 const SidebarOption = (props:any) => {
   const {profile, messages, token} = props;
   const [selectedOption, setSelectedOption] = useState<number>(0);
+  const [isSidebarShown, setIsSidebarShown] = useState<boolean>(false);
+  const handleSidebarShown=()=>{
+    setIsSidebarShown(!isSidebarShown);
+  }
   return (
     <div className='flex w-full'>
-    <div className="hidden sm:flex flex-col justify-between w-[15%] bg-[#FAFAFA] h-screen px-5 py-2.5 border-r-2">
+    <div className={`${isSidebarShown?'fixed z-50':'hidden'} sm:flex flex-col justify-between w-[60%] sm:w-[15%] bg-[#FAFAFA] h-screen px-5 py-2.5 border-r-2`}>
         <div>
         {/* <h1 className="text-xl font-bold border-b border-dashed pb-2">Dashboard</h1> */}
+        <CloseIcon className="sm:hidden cursor-pointer text-[#8A95AD] text-[18px] fixed top-4 right-44" onClick={()=>{handleSidebarShown()}} />
         <div className='flex items-center gap-5'>
         <Image src="/logo.svg" alt="RowMail" width={50} height={50} />
         {/* <h1 className='text-xl font-bold logo-font text-[#28A9BB]'>RowMail</h1> */}
@@ -74,7 +80,7 @@ const SidebarOption = (props:any) => {
           </div>
         </div>
       </div>
-      <SelectedOption messages={messages} token={token} selectedOption={selectedOption} />
+      <SelectedOption messages={messages} token={token} selectedOption={selectedOption} handleSidebarShown={handleSidebarShown} />
       </div>
   )
 };

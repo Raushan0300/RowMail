@@ -20,6 +20,10 @@ const config: Config = {
           display: 'none',
         },
       },
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+      },
     },
   },
   plugins: [],
