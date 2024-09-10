@@ -48,7 +48,7 @@ const EmailBox = (props:any) => {
     if(messageData?.from){
       getUserPic(messageData?.from?.match(/^(.*)\s<(.+)>$/)?.[2]);
     }
-  }, [messageData]);
+  }, [messageData, getUserPic]);
 
 
   const decodeBase64 = (str: string) => {

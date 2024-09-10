@@ -1,7 +1,7 @@
 'use client';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import EmailBox from './EmailBox';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import he from 'he';
 import { getData } from '../config';
 import { CircularProgress } from '@mui/material';
