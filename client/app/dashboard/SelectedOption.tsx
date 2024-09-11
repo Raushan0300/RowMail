@@ -1,7 +1,7 @@
 'use client';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import EmailBox from './EmailBox';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import he from 'he';
 import { getData } from '../config';
 import { CircularProgress } from '@mui/material';
@@ -13,6 +13,14 @@ const SelectedOption = (props:any) => {
     const [messageId, setMessageId] = useState<any>('');
     const [nextPageToken, setNextPageToken] = useState<string | null>(messages?.nextPageToken || null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [isMobile, setIsMobile] = useState<boolean>(false);
+
+    useEffect(()=>{
+        setIsMobile(window.innerWidth<=640);
+        window.addEventListener('resize', ()=>{
+            setIsMobile(window.innerWidth<=640);
+        });
+    },[]);
 
     const fetchEmails =  async(pageToken: string | null = null) => {
         try {
@@ -91,7 +99,7 @@ const SelectedOption = (props:any) => {
     <div className={`${messageId&&'hidden'} sm:flex flex-col w-full sm:w-[25%] h-screen py-2.5 border-r-2`}>
         <div className="flex justify-between border-b pb-2">
         <div className="flex items-center px-2 gap-3 w-[50%]">
-          <MenuIcon className="sm:hidden text-[#8A95AD] text-[18px]" onClick={()=>{handleSidebarShown()}} />
+          {isMobile&&<MenuIcon className="sm:hidden text-[#8A95AD] text-[18px]" onClick={()=>{handleSidebarShown()}} />}
         <h1 className="text-lg font-bold">{showSelectedOption()}</h1>
         {/* <span className="text-[10px] text-[#8A95AD]">{unreadEmailCount}/{emails.length} Unread</span> */}
         </div>
