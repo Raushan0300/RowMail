@@ -6,9 +6,10 @@ import he from 'he';
 import { getData } from '../config';
 import { CircularProgress } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import Compose from './Compose';
 
 const SelectedOption = (props:any) => {
-    const {messages, token, selectedOption, handleSidebarShown} = props;
+    const {messages, token, selectedOption, handleSidebarShown, isCompose, setIsCompose} = props;
     const [emails, setEmails] = useState<any>(messages?.emails || []);
     const [messageId, setMessageId] = useState<any>('');
     const [nextPageToken, setNextPageToken] = useState<string | null>(messages?.nextPageToken || null);
@@ -62,6 +63,7 @@ const SelectedOption = (props:any) => {
 
       const markRead = async (id:string) => {
         if(id){
+          setIsCompose(false);
               const emailIndex = emails.findIndex((email:any)=>email.id===id);
               if(emailIndex!==-1){
                 // const updatedEmails = [...emails];
@@ -134,7 +136,8 @@ const SelectedOption = (props:any) => {
             {loading?<div className='flex justify-center items-center h-[10vh]'><CircularProgress /></div>:<div className={`flex justify-center items-center h-[5vh] text-[12px] w-full cursor-pointer text-[#1ea1f7] ${emails.length==0&&'hidden'}`} onClick={()=>{fetchEmails(nextPageToken)}}>Load More</div>}
         </div>
     </div>
-    {messageId&&<EmailBox messageId={messageId} setMessageId={setMessageId} token={token} />}
+    {isCompose&&<Compose token={token} setIsCompose={setIsCompose} />}
+    {!isCompose&&messageId&&<EmailBox messageId={messageId} setMessageId={setMessageId} token={token} />}
     </div>
   )
 };
