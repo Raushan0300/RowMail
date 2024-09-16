@@ -42,6 +42,7 @@ app.use('/api', require('./routes/email'));
 app.use('/api', require('./routes/user'));
 app.use('/api', require('./routes/markRead'));
 app.use('/api', require('./routes/getUserPic'));
+app.use('/api', require('./routes/send'));
 
 
 app.listen(PORT, ()=>{

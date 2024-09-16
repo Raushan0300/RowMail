@@ -1,7 +1,7 @@
 import { useState, ChangeEvent } from 'react';
 
 function AutoResizeTextArea(props:any) {
-    const {minHeight} = props;
+    const {minHeight, value, setValue} = props;
   const [height, setHeight] = useState(minHeight);
 
   const handleInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -24,6 +24,8 @@ function AutoResizeTextArea(props:any) {
       className="w-full resize-none outline-none"
       style={{ height }}
       onInput={handleInput}
+      value={value}
+      onChange={(e)=>{setValue(e.target.value)}}
     />
   );
 }
