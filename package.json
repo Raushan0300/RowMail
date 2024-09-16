@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build": "cd client && npm install && npm run build && rm -rf node_modules && cd ..",
+    "build": "nexpres build",
     "dev": "nodemon index.js"
   },
   "dependencies": {
@@ -14,6 +14,7 @@
     "googleapis": "^144.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.3",
+    "nexpres": "^1.1.2",
     "next": "^14.2.7"
   },
   "devDependencies": {
