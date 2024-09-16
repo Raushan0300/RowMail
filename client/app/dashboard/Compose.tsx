@@ -17,10 +17,19 @@ const Compose = (props:any) => {
     const [bcc, setBCC] = useState('');
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
+    const [attachments, setAttachments] = useState<File[]>([]);
 
     const [isSending, setIsSending] = useState(false);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const handleFileChange = (e:any) => {
+      // const files = e.target.files;
+      // if(files){
+      //   setAttachments([...attachments, ...files]);
+      // };
+      setAttachments(Array.from(e.target.files));
+    };
 
 
     const sendEmail=async()=>{
@@ -33,8 +42,18 @@ const Compose = (props:any) => {
         return;
       };
       setIsSending(true);
-      const email = {to: to, cc: cc, bcc: bcc, subject: subject, body: body};
-      await postData('send', {email}, {Authorization: `Bearer ${token}`});
+      // const email = {to: to, cc: cc, bcc: bcc, subject: subject, body: body};
+      const formData = new FormData();
+      formData.append('to', to);
+      formData.append('cc', cc);
+      formData.append('bcc', bcc);
+      formData.append('subject', subject);
+      formData.append('body', body);
+      attachments.forEach((file)=>{
+        formData.append('attachments', file);
+      });
+
+      await postData('send', formData, {Authorization: `Bearer ${token}`});
       setIsSending(false);
     };
 
@@ -46,7 +65,10 @@ const Compose = (props:any) => {
         <div className="flex justify-between gap-5 items-center px-5 border-b pb-1.5">
           <ArrowBackIcon className="cursor-pointer text-[#8A95AD] text-[18px]" onClick={()=>{setIsCompose(false)}} />
           <div className="flex gap-3 items-center">
-            <AttachFileIcon className="cursor-pointer text-[#8A95AD] text-[18px]" />
+          <input type="file" multiple onChange={handleFileChange} className="hidden" id="file-input" />
+              <label htmlFor="file-input">
+                <AttachFileIcon className="cursor-pointer text-[#8A95AD] text-[18px]" />
+              </label>
             <ScheduleSendIcon className="cursor-pointer text-[#8A95AD] text-[18px]" />
             {!isSending?<button className='text-[12px] font-bold text-white bg-[#4834F6] px-4 py-1.5 rounded-lg hover:bg-[#3479BD]' onClick={()=>{sendEmail()}}>Send</button>:<CircularProgress size={20} color='inherit' />}
           </div>
