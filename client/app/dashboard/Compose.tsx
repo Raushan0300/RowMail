@@ -1,6 +1,9 @@
 'use client';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useState } from 'react';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
+import AutoResizeTextArea from '../components/AutoResizeTextArea';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 const Compose = (props:any) => {
     const {setIsCompose} = props;
@@ -16,6 +19,8 @@ const Compose = (props:any) => {
         <div className="flex justify-between gap-5 items-center px-5 border-b pb-1.5">
           <ArrowBackIcon className="cursor-pointer text-[#8A95AD] text-[18px]" onClick={()=>{setIsCompose(false)}} />
           <div className="flex gap-3 items-center">
+            <AttachFileIcon className="cursor-pointer text-[#8A95AD] text-[18px]" />
+            <ScheduleSendIcon className="cursor-pointer text-[#8A95AD] text-[18px]" />
             <button className='text-[12px] font-bold text-white bg-[#4834F6] px-4 py-1.5 rounded-lg hover:bg-[#3479BD]'>Send</button>
           </div>
         </div>
@@ -42,7 +47,7 @@ const Compose = (props:any) => {
               <p>Subject: </p>
               <input type="text" placeholder="Subject" className="w-full outline-none" />
             </div>
-            <textarea placeholder="Compose email" className="w-full h-[82vh] resize-none outline-none" />
+            <AutoResizeTextArea minHeight='30vh' />
         </div>
         
           </div>
