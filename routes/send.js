@@ -1,6 +1,7 @@
 const express = require("express");
 const { google } = require("googleapis");
 const multer = require("multer");
+const MailComposer = require("nodemailer/lib/mail-composer");
 const router = express.Router();
 
 const { oAuth2Client } = require("../controllers/googleOAuth2Client");
@@ -20,63 +21,31 @@ router.post("/send", authenticatedToken, upload.array('attachments'), async (req
     return res.status(400).send("Invalid email address.");
   }
 
-  // Boundary for separating parts of the message
-  const boundaryMixed = "foo_bar_baz";  // For attachments + body
-  const boundaryAlternative = "alt_body_boundary";  // For text parts
+  const mail = new MailComposer({
+    to,
+    cc,
+    bcc,
+    subject,
+    text: body,
+    textEncoding: "base64",
+    attachments: req.files.map(file => ({
+      filename: file.originalname,
+      content: file.buffer.toString("base64"),
+      encoding: "base64",
+    })),
+  });
 
-  // Construct the message headers
-  let messageParts = [
-    `From: "${req.user.name}" <${req.user.email}>`,
-    `To: ${to}`,
-    cc ? `Cc: ${cc}` : null,
-    bcc ? `Bcc: ${bcc}` : null,
-    `Subject: ${subject}`,
-    "MIME-Version: 1.0",
-    `Content-Type: multipart/mixed; boundary="${boundaryMixed}"`,
-    "",  // Blank line to separate headers from body
-    `--${boundaryMixed}`
-  ].filter(Boolean);  // Remove any null values for Cc/Bcc if not provided
-
-  // Add the body of the email (plain text in this case)
-  messageParts.push(
-    `Content-Type: multipart/alternative; boundary="${boundaryAlternative}"`,
-    "",  // Blank line
-    `--${boundaryAlternative}`,
-    "Content-Type: text/plain; charset=\"UTF-8\"",
-    "Content-Transfer-Encoding: 7bit",
-    "",
-    body,  // Email body content
-    "",  // Blank line before next boundary
-    `--${boundaryAlternative}--`,  // Close the alternative section
-    `--${boundaryMixed}`  // Start attachment section
-  );
-
-  // Handle attachments if any
-  if (req.files && req.files.length > 0) {
-    req.files.forEach(file => {
-      messageParts.push(
-        `Content-Type: ${file.mimetype}; name="${file.originalname}"`,
-        `Content-Disposition: attachment; filename="${file.originalname}"`,
-        "Content-Transfer-Encoding: base64",
-        "",
-        file.buffer.toString("base64"),  // Base64-encoded attachment
-        `--${boundaryMixed}`  // Next part
-      );
-    });
-  }
-
-  // Close the mixed boundary
-  messageParts.push(`--${boundaryMixed}--`);
-
-  // Join the message parts and encode the message
-  const rawMessage = messageParts.join("\n");
-  const encodedMessage = Buffer.from(rawMessage)
+  mail.compile().build(async(err, rawMessage)=>{
+    if(err){
+      console.error(`Failed to compile message:`, err);
+      return res.status(500).send(`Failed to compile message: ${err.message}`);
+    }
+    const encodedMessage = Buffer.from(rawMessage)
     .toString("base64")
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
-    .replace(/=+$/, "");  // Gmail-specific base64 encoding
+    .replace(/=+$/, "");
 
-  // Send the email via Gmail API
   const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
 
   try {
@@ -91,6 +60,8 @@ router.post("/send", authenticatedToken, upload.array('attachments'), async (req
     console.error(`Failed to send message to ${to}:`, error);
     return res.status(500).send(`Failed to send message to ${to}: ${error.message}`);
   }
+
+  })
 });
 
 module.exports = router;
