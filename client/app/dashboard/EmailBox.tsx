@@ -92,6 +92,12 @@ const EmailBox = (props:any) => {
   //   );
   // };
 
+  const buildAttachmentUrl = (mimeType: string, base64Data: string) => {
+    // Clean up base64 string by replacing invalid URL characters
+    const cleanedBase64 = base64Data.replace(/_/g, '/').replace(/-/g, '+');
+    return `data:${mimeType};base64,${cleanedBase64}`;
+  };
+
   const date = new Date(Number(messageData?.date));
   const now = new Date();
   const isSameDay = date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
@@ -136,6 +142,41 @@ const EmailBox = (props:any) => {
           <div dangerouslySetInnerHTML={{__html:DOMPurify.sanitize(decodeBase64(messageData.emailData))}}></div>
           </div>
           </div>}
+          {messageData.attachments && messageData.attachments.length > 0 && (
+  <div className="px-5">
+    <h3>Attachments:</h3>
+    {messageData.attachments.map((attachment: any, index: any) => {
+      // Check if it's an image and render it directly
+      const attachmentURL = buildAttachmentUrl(attachment.mimeType, attachment.data);
+      if (attachment.mimeType.startsWith('image/')) {
+        return (
+          <div key={index}>
+            <p>{attachment.filename}</p>
+            <img
+              src={attachmentURL}  // Use base64 data directly
+              alt={attachment.filename}
+              style={{ maxWidth: '100%', height: 'auto' }}  // Ensure the image fits well
+            />
+          </div>
+        );
+      } else {
+        // Render non-image files as downloadable links
+        return (
+          <div key={index}>
+            <p>{attachment.filename}</p>
+            <a
+              href={attachmentURL}  // Use base64 data directly for download link
+              download={attachment.filename}  // Ensure download attribute works
+              className="text-blue-600 underline"
+            >
+              Download {attachment.filename}
+            </a>
+          </div>
+        );
+      }
+    })}
+  </div>
+)}
         </div>}
     </div>
   )

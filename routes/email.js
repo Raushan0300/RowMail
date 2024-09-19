@@ -15,6 +15,32 @@ router.get("/email/:id", authenticatedToken, async (req, res) => {
       id,
     });
     const emailData = emailContent(email.data);
+
+    let attachments = [];
+
+    // Check if the email has parts (this is where attachments usually reside)
+    const parts = email.data.payload.parts;
+
+    if (parts) {
+      for (const part of parts) {
+        if (part.filename && part.body.attachmentId) {
+          // If there's an attachment, retrieve it
+          const attachment = await gmail.users.messages.attachments.get({
+            userId: "me",
+            messageId: id,
+            id: part.body.attachmentId,
+          });
+
+          // Push attachment details (base64 encoded)
+          attachments.push({
+            filename: part.filename,
+            mimeType: part.mimeType,
+            data: attachment.data.data, // base64 encoded
+          });
+        }
+      }
+    };
+    
     return res
       .status(200)
       .json({
@@ -30,6 +56,7 @@ router.get("/email/:id", authenticatedToken, async (req, res) => {
         date: email.data.internalDate,
         labelIds: email.data.labelIds,
         emailData,
+        attachments,
       });
   } catch (error) {
     console.log(error);

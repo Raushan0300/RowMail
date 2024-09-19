@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import AutoResizeTextArea from '../components/AutoResizeTextArea';
@@ -21,14 +21,19 @@ const Compose = (props:any) => {
 
     const [isSending, setIsSending] = useState(false);
 
+    const [filePreviews, setFilePreviews] = useState<string[]>([]);
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    const handleFileChange = (e:any) => {
-      // const files = e.target.files;
-      // if(files){
-      //   setAttachments([...attachments, ...files]);
-      // };
-      setAttachments(Array.from(e.target.files));
+    const handleFileChange = (e: any) => {
+      const files = e.target.files;
+      if (files) {
+        const newFiles:File[] = Array.from(files);
+        const newPreviews = newFiles.map(file => URL.createObjectURL(file));
+        
+        setAttachments(prev => [...prev, ...newFiles]);  // Append new files to existing attachments
+        setFilePreviews(prev => [...prev, ...newPreviews]);  // Append new previews to existing previews
+      }
     };
 
 
@@ -56,6 +61,12 @@ const Compose = (props:any) => {
       await postData('send', formData, {Authorization: `Bearer ${token}`});
       setIsSending(false);
     };
+
+    useEffect(() => {
+      return () => {
+        filePreviews.forEach(preview => URL.revokeObjectURL(preview));
+      };
+    }, [filePreviews]);
 
 
   return (
@@ -97,10 +108,35 @@ const Compose = (props:any) => {
               <input type="text" placeholder="Subject" className="w-full outline-none" value={subject} onChange={(e)=>{setSubject(e.target.value)}} />
             </div>
             <AutoResizeTextArea minHeight='30vh' value={body} setValue={setBody} />
+
         </div>
         
           </div>
         </div>
+        <div className="flex flex-col gap-2 mt-2">
+              {filePreviews.map((preview:any, index) => (
+                <div key={index} className="flex gap-2 items-center">
+                  {preview.file.type.startsWith('image/') ? (
+                    <img src={preview.url} alt={`preview-${index}`} className="w-20 h-20 object-cover" />
+                  ) : preview.file.type === 'application/pdf' ? (
+                    <embed src={preview.url} type="application/pdf" className="w-20 h-20" />
+                  ) : (
+                    <div className="w-20 h-20 flex items-center justify-center bg-gray-200 text-gray-700">
+                      <p className="text-sm truncate">{preview.file.name}</p>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => {
+                      setAttachments(prev => prev.filter((_, i) => i !== index));
+                      setFilePreviews(prev => prev.filter((_, i) => i !== index));
+                    }}
+                    className="text-red-500"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
     </div>
   )
 };
