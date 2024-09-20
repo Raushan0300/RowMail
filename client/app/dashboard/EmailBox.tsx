@@ -7,6 +7,7 @@ import Image from "next/image";
 import DOMPurify from 'dompurify';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import FilePreviewer from "../components/FilePreviewer";
 
 const EmailBox = (props:any) => {
   const {messageId, setMessageId, token}=props;
@@ -39,16 +40,20 @@ const EmailBox = (props:any) => {
     }
   }, [messageData, messageId, token]);
 
-  const getUserPic = async(email:string)=>{
-    const res = await getData(`getUserPic`,{Authorization:`Bearer ${token}`, email:email});
-    setUserPic(res.profilePic);
-  }
+  // const getUserPic = async(email:string)=>{
+  //   const res = await getData(`getUserPic`,{Authorization:`Bearer ${token}`, email:email});
+  //   setUserPic(res.profilePic);
+  // }
 
   useEffect(()=>{
+    const getUserPic = async(email:string)=>{
+      const res = await getData(`getUserPic`,{Authorization:`Bearer ${token}`, email:email});
+      setUserPic(res.profilePic);
+    }
     if(messageData?.from){
       getUserPic(messageData?.from?.match(/^(.*)\s<(.+)>$/)?.[2]);
     }
-  }, [messageData, getUserPic]);
+  }, [messageData, token]);
 
 
   const decodeBase64 = (str: string) => {
@@ -138,45 +143,25 @@ const EmailBox = (props:any) => {
             </div>
           </div>
         </div>
-        <div className="flex-grow overflow-auto scrollbar-hide px-5 mt-4">
+        <div className="flex-grow overflow-auto scrollbar-hide">
+        <div className="flex-grow px-5 mt-4">
           <div dangerouslySetInnerHTML={{__html:DOMPurify.sanitize(decodeBase64(messageData.emailData))}}></div>
           </div>
-          </div>}
           {messageData.attachments && messageData.attachments.length > 0 && (
-  <div className="px-5">
-    <h3>Attachments:</h3>
+  <div className="flex gap-2 items-center px-5">
     {messageData.attachments.map((attachment: any, index: any) => {
-      // Check if it's an image and render it directly
       const attachmentURL = buildAttachmentUrl(attachment.mimeType, attachment.data);
-      if (attachment.mimeType.startsWith('image/')) {
-        return (
-          <div key={index}>
-            <p>{attachment.filename}</p>
-            <img
-              src={attachmentURL}  // Use base64 data directly
-              alt={attachment.filename}
-              style={{ maxWidth: '100%', height: 'auto' }}  // Ensure the image fits well
-            />
-          </div>
-        );
-      } else {
-        // Render non-image files as downloadable links
-        return (
-          <div key={index}>
-            <p>{attachment.filename}</p>
-            <a
-              href={attachmentURL}  // Use base64 data directly for download link
-              download={attachment.filename}  // Ensure download attribute works
-              className="text-blue-600 underline"
-            >
-              Download {attachment.filename}
-            </a>
-          </div>
-        );
-      }
+      return (
+        <div key={index} className="mt-10">
+          {/* <ReactFilesPreview url={attachmentURL} downloadFile removeFile={false} disabled={true} multiple={false} width="0" height="0" showSliderCount={false} /> */}
+          <FilePreviewer fileUrl={attachmentURL} mimeType={attachment.mimeType} showDownloadButton={true} showCloseButton={false} fileName={attachment.filename} />
+        </div>
+      )
     })}
   </div>
 )}
+          </div>
+          </div>}
         </div>}
     </div>
   )
