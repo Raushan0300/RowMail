@@ -1,15 +1,19 @@
 'use client';
+import Header from './components/Header';
+import HeroSection from './components/HeroSection';
+import FeaturesSection from './components/FeaturesSection';
+import WaitlistForm from './components/WaitlistForm';
+import Footer from './components/Footer';
 
 export default function PageClient() {
-  const handleLogin = async()=>{
-    window.location.href = `/api/auth`;
-  }
+  
   return (
-    <div className='flex flex-col justify-center items-center h-screen'>
-      <button className='flex justify-between items-center gap-3 py-2 px-5 rounded-[10px] text-[#111111] text-[18px] font-bold border-2 border-[#333]' onClick={handleLogin}>
-        <img src="/googleicon.svg" alt="Google" width={30} />
-        Login with Google
-      </button>
-    </div>
+    <main>
+      <Header />
+      <HeroSection />
+      <FeaturesSection />
+      <WaitlistForm />
+      <Footer />
+    </main>
   );
 }

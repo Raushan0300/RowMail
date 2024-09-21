@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: "RowMail - Your Personal Email Assistant",
     description:
       "Manage your emails, tasks, and calendar with RowMail. Write better emails, schedule, snooze, and get reminders to follow up.",
-    url: "https://rowmail.raushan.xyz",
+    url: "https://rowmail.app",
     type: "website",
   },
   twitter: {
